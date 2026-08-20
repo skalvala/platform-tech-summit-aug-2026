@@ -1,73 +1,73 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1320" viewBox="0 0 2000 1320" font-family="Arial, Helvetica, sans-serif" role="img" aria-label="Unified Observability for Traces — High-Level Architecture with Batch">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64789e"/></marker>
-    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#34c759"/></marker>
-    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#22d3ee"/></marker>
-    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f5b301"/></marker>
-    <marker id="arrowViolet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a78bfa"/></marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0f9d6a"/></marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0891b2"/></marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
+    <marker id="arrowViolet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker>
     <marker id="arrowFeed" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64789e"/></marker>
     <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4faea"/><stop offset="1" stop-color="#cdefd8"/></linearGradient>
     <linearGradient id="gSticky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe07a"/><stop offset="1" stop-color="#ffcf3f"/></linearGradient>
-    <linearGradient id="gStore" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e9eff9"/></linearGradient>
-    <linearGradient id="gLake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d7e7ff"/><stop offset="1" stop-color="#bcd3f5"/></linearGradient>
-    <linearGradient id="gHead" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b9c6e6"/></linearGradient>
-    <radialGradient id="gGlowC" cx="78%" cy="0%" r="70%"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.10"/><stop offset="0.6" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
-    <radialGradient id="gGlowV" cx="8%" cy="4%" r="55%"><stop offset="0" stop-color="#a78bfa" stop-opacity="0.10"/><stop offset="0.6" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gStore" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef3fb"/></linearGradient>
+    <linearGradient id="gLake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbe9ff"/><stop offset="1" stop-color="#c2d6f5"/></linearGradient>
+    <linearGradient id="gHead" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1a2233"/><stop offset="1" stop-color="#3a4a66"/></linearGradient>
+    <radialGradient id="gGlowC" cx="80%" cy="2%" r="60%"><stop offset="0" stop-color="#0891b2" stop-opacity="0.06"/><stop offset="0.7" stop-color="#0891b2" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gGlowV" cx="6%" cy="6%" r="45%"><stop offset="0" stop-color="#6d28d9" stop-opacity="0.05"/><stop offset="0.7" stop-color="#6d28d9" stop-opacity="0"/></radialGradient>
     <style>
       .b-label { font-weight:700; }
       .flow-label { font-family:"Courier New", monospace; }
       .edge { fill:none; stroke-width:2.6; }
       .feed { stroke:#64789e; stroke-width:2.4; }
-      .tel { stroke:#34c759; } .stream { stroke:#22d3ee; } .batch { stroke:#f5b301; } .bidi { stroke:#a78bfa; }
+      .tel { stroke:#0f9d6a; } .stream { stroke:#0891b2; } .batch { stroke:#b45309; } .bidi { stroke:#6d28d9; }
       .flow { stroke-dasharray:10 10; animation: dash 1s linear infinite; }
       @keyframes dash { to { stroke-dashoffset:-20; } }
-      .shadow { filter: drop-shadow(0 6px 12px rgba(0,0,0,.35)); }
+      .shadow { filter: drop-shadow(0 6px 14px rgba(20,30,60,.16)); }
     </style>
   </defs>
 
   <!-- Backdrop -->
-  <rect x="0" y="0" width="2000" height="1320" rx="26" fill="#0a0e1c"/>
+  <rect x="0" y="0" width="2000" height="1320" rx="26" fill="#ffffff"/>
   <rect x="0" y="0" width="2000" height="1320" rx="26" fill="url(#gGlowC)"/>
   <rect x="0" y="0" width="2000" height="1320" rx="26" fill="url(#gGlowV)"/>
-  <rect x="6" y="6" width="1988" height="1308" rx="22" fill="none" stroke="#24304f" stroke-width="1.5"/>
+  <rect x="6" y="6" width="1988" height="1308" rx="22" fill="none" stroke="#dbe2ee" stroke-width="1.5"/>
 
   <!-- Header -->
-  <text x="70" y="70" font-family="Courier New, monospace" font-size="17" letter-spacing="5" fill="#22d3ee">PLATFORM TECH SUMMIT · AUG 2026 · HIGH-LEVEL DESIGN</text>
+  <text x="70" y="70" font-family="Courier New, monospace" font-size="17" letter-spacing="5" fill="#0891b2">PLATFORM TECH SUMMIT · AUG 2026 · HIGH-LEVEL DESIGN</text>
   <text x="68" y="128" font-size="46" font-weight="800" fill="url(#gHead)">Unified Observability for Traces</text>
-  <text x="68" y="176" font-size="30" font-weight="800" fill="#f5b301">High-Level Architecture · with Batch</text>
+  <text x="68" y="176" font-size="30" font-weight="800" fill="#b45309">High-Level Architecture · with Batch</text>
 
   <!-- Legend -->
   <g font-size="18" transform="translate(70,214)">
-    <rect x="0" y="-14" width="30" height="16" rx="4" fill="url(#gSticky)"/><text x="40" y="0" fill="#9fb0cf">Actor / Platform</text>
-    <rect x="215" y="-14" width="30" height="16" rx="4" fill="#d6f5df" stroke="#3fb765"/><text x="255" y="0" fill="#9fb0cf">Service / Compute</text>
-    <rect x="470" y="-14" width="30" height="16" rx="4" fill="#eef3fb" stroke="#c3d0e6"/><text x="510" y="0" fill="#9fb0cf">Store / Sink</text>
-    <line x1="700" y1="-6" x2="740" y2="-6" stroke="#34c759" stroke-width="4" stroke-dasharray="10 8"/><text x="750" y="0" fill="#9fb0cf">Telemetry ingest</text>
-    <line x1="960" y1="-6" x2="1000" y2="-6" stroke="#22d3ee" stroke-width="4" stroke-dasharray="10 8"/><text x="1010" y="0" fill="#9fb0cf">Real-time / streaming</text>
-    <line x1="1280" y1="-6" x2="1320" y2="-6" stroke="#f5b301" stroke-width="4" stroke-dasharray="10 8"/><text x="1330" y="0" fill="#9fb0cf">Batch (S3 → Spark)</text>
-    <line x1="1560" y1="-6" x2="1600" y2="-6" stroke="#a78bfa" stroke-width="4" stroke-dasharray="10 8"/><text x="1610" y="0" fill="#9fb0cf">Query / consume</text>
+    <rect x="0" y="-14" width="30" height="16" rx="4" fill="url(#gSticky)"/><text x="40" y="0" fill="#5b6678">Actor / Platform</text>
+    <rect x="215" y="-14" width="30" height="16" rx="4" fill="#d6f5df" stroke="#3fb765"/><text x="255" y="0" fill="#5b6678">Service / Compute</text>
+    <rect x="470" y="-14" width="30" height="16" rx="4" fill="#eef3fb" stroke="#c3d0e6"/><text x="510" y="0" fill="#5b6678">Store / Sink</text>
+    <line x1="700" y1="-6" x2="740" y2="-6" stroke="#0f9d6a" stroke-width="4" stroke-dasharray="10 8"/><text x="750" y="0" fill="#5b6678">Telemetry ingest</text>
+    <line x1="960" y1="-6" x2="1000" y2="-6" stroke="#0891b2" stroke-width="4" stroke-dasharray="10 8"/><text x="1010" y="0" fill="#5b6678">Real-time / streaming</text>
+    <line x1="1280" y1="-6" x2="1320" y2="-6" stroke="#b45309" stroke-width="4" stroke-dasharray="10 8"/><text x="1330" y="0" fill="#5b6678">Batch (S3 → Spark)</text>
+    <line x1="1560" y1="-6" x2="1600" y2="-6" stroke="#6d28d9" stroke-width="4" stroke-dasharray="10 8"/><text x="1610" y="0" fill="#5b6678">Query / consume</text>
   </g>
 
   <!-- ============ DIAGRAM ============ -->
   <g transform="translate(100,250)" fill="#10203a">
 
     <!-- Boundaries -->
-    <rect x="372" y="250" width="404" height="628" rx="14" fill="rgba(34,211,238,.045)" stroke="#3a5170" stroke-width="1.6" stroke-dasharray="7 6"/>
-    <text class="b-label" x="574" y="286" text-anchor="middle" fill="#cfe0ff" font-size="21">CDP FD</text>
+    <rect x="372" y="250" width="404" height="628" rx="14" fill="rgba(8,145,178,.05)" stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"/>
+    <text class="b-label" x="574" y="286" text-anchor="middle" fill="#0e7490" font-size="21">CDP FD</text>
 
-    <rect x="812" y="196" width="948" height="700" rx="16" fill="rgba(167,139,250,.05)" stroke="#5b4b86" stroke-width="1.8" stroke-dasharray="7 6"/>
-    <text class="b-label" x="1740" y="232" text-anchor="end" fill="#e5ddff" font-size="24" font-weight="800">Falcon Instance</text>
+    <rect x="812" y="196" width="948" height="700" rx="16" fill="rgba(109,40,217,.045)" stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"/>
+    <text class="b-label" x="1740" y="232" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance</text>
 
-    <rect x="836" y="268" width="720" height="600" rx="14" fill="rgba(34,211,238,.04)" stroke="#3a5170" stroke-width="1.5" stroke-dasharray="6 6"/>
-    <text class="b-label" x="1196" y="302" text-anchor="middle" fill="#cfe0ff" font-size="19">Data Cloud (CDP FD)</text>
+    <rect x="836" y="268" width="720" height="600" rx="14" fill="rgba(8,145,178,.04)" stroke="#4a7f97" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <text class="b-label" x="1196" y="302" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud (CDP FD)</text>
 
-    <rect x="1320" y="330" width="196" height="470" rx="12" fill="rgba(255,255,255,.05)" stroke="#476089" stroke-width="1.4" stroke-dasharray="6 6"/>
-    <text class="b-label" x="1418" y="362" text-anchor="middle" fill="#dfeaff" font-size="18">Lakehouse</text>
+    <rect x="1320" y="330" width="196" height="470" rx="12" fill="rgba(71,96,137,.07)" stroke="#476089" stroke-width="1.4" stroke-dasharray="6 6"/>
+    <text class="b-label" x="1418" y="362" text-anchor="middle" fill="#3a5878" font-size="18">Lakehouse</text>
 
-    <rect x="1572" y="330" width="176" height="470" rx="12" fill="rgba(167,139,250,.06)" stroke="#5b4b86" stroke-width="1.4" stroke-dasharray="6 6"/>
-    <text class="b-label" x="1660" y="362" text-anchor="middle" fill="#e5ddff" font-size="16">Consumption Layer</text>
+    <rect x="1572" y="330" width="176" height="470" rx="12" fill="rgba(109,40,217,.05)" stroke="#8b73c4" stroke-width="1.4" stroke-dasharray="6 6"/>
+    <text class="b-label" x="1660" y="362" text-anchor="middle" fill="#6d28d9" font-size="16">Consumption Layer</text>
 
-    <rect x="70" y="560" width="232" height="272" rx="12" fill="rgba(52,199,89,.06)" stroke="#3f7a56" stroke-width="1.4" stroke-dasharray="6 6"/>
-    <text class="b-label" x="186" y="592" text-anchor="middle" fill="#d6f5df" font-size="15">Near Core Services</text>
+    <rect x="70" y="560" width="232" height="272" rx="12" fill="rgba(15,157,106,.06)" stroke="#3f7a56" stroke-width="1.4" stroke-dasharray="6 6"/>
+    <text class="b-label" x="186" y="592" text-anchor="middle" fill="#0f9d6a" font-size="15">Near Core Services</text>
 
     <!-- Sticky notes -->
     <g class="shadow">
@@ -92,16 +92,16 @@
 
     <!-- Core -->
     <g class="shadow">
-      <rect x="70" y="318" width="232" height="212" rx="10" fill="#f4f7fc" stroke="#c3d0e6" stroke-width="1.5"/>
+      <rect x="70" y="318" width="232" height="212" rx="10" fill="#ffffff" stroke="#c3d0e6" stroke-width="1.5"/>
       <text x="186" y="346" text-anchor="middle" class="b-label" font-size="16">Core</text>
       <g font-size="13" text-anchor="middle">
-        <rect x="96" y="360" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"/><text x="186" y="380">Flow</text>
-        <rect x="96" y="398" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"/><text x="186" y="418">APEX</text>
-        <rect x="96" y="436" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"/><text x="186" y="456">Prompt Builder</text>
-        <rect x="96" y="474" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"/><text x="186" y="497" font-weight="700" letter-spacing="2">· · · · ·</text>
+        <rect x="96" y="360" width="180" height="30" rx="7" fill="#f4f7fc" stroke="#c9d5ea"/><text x="186" y="380">Flow</text>
+        <rect x="96" y="398" width="180" height="30" rx="7" fill="#f4f7fc" stroke="#c9d5ea"/><text x="186" y="418">APEX</text>
+        <rect x="96" y="436" width="180" height="30" rx="7" fill="#f4f7fc" stroke="#c9d5ea"/><text x="186" y="456">Prompt Builder</text>
+        <rect x="96" y="474" width="180" height="30" rx="7" fill="#f4f7fc" stroke="#c9d5ea"/><text x="186" y="497" font-weight="700" letter-spacing="2">· · · · ·</text>
       </g>
     </g>
-    <path class="edge" style="stroke:#1faa4b;stroke-width:2.6" d="M14,406 L70,406" marker-end="url(#arrowGreen)"/>
+    <path class="edge" style="stroke:#0f9d6a;stroke-width:2.6" d="M14,406 L70,406" marker-end="url(#arrowGreen)"/>
 
     <!-- Near Core rows -->
     <g font-size="13" text-anchor="middle">
@@ -115,8 +115,8 @@
     <path class="edge tel" d="M302,424 L338,424 L338,466"/>
     <path class="edge tel" d="M302,672 L338,672 L338,466"/>
     <path class="edge flow tel" d="M338,466 L406,466" marker-end="url(#arrowGreen)"/>
-    <text class="flow-label" x="350" y="500" fill="#8fe0a6" font-size="12">Customer-facing</text>
-    <text class="flow-label" x="350" y="516" fill="#8fe0a6" font-size="12">Telemetry Data</text>
+    <text class="flow-label" x="350" y="500" fill="#0f9d6a" font-size="12">Customer-facing</text>
+    <text class="flow-label" x="350" y="516" fill="#0f9d6a" font-size="12">Telemetry Data</text>
 
     <!-- Ingestion Service -->
     <g class="shadow">
@@ -134,18 +134,18 @@
 
     <!-- Ajna -> Beacon -->
     <path class="edge flow stream" d="M724,440 L800,440 L800,414 L884,414" marker-end="url(#arrowCyan)"/>
-    <text class="flow-label" x="742" y="392" fill="#7fe9f7" font-size="12">Metrics · Traces</text>
-    <text class="flow-label" x="742" y="408" fill="#7fe9f7" font-size="12">Error Logs</text>
+    <text class="flow-label" x="742" y="392" fill="#0e7490" font-size="12">Metrics · Traces</text>
+    <text class="flow-label" x="742" y="408" fill="#0e7490" font-size="12">Error Logs</text>
 
     <!-- Ajna -> S3 -->
     <path class="edge flow batch" d="M664,514 L664,600" marker-end="url(#arrowAmber)"/>
-    <text class="flow-label" x="676" y="560" fill="#f7cf6a" font-size="12">Info Logs</text>
+    <text class="flow-label" x="676" y="560" fill="#b45309" font-size="12">Info Logs</text>
 
     <!-- Amazon S3 -->
     <g class="shadow">
       <path d="M614,614 h100 l-10,74 a40,9 0 0 1 -80,0 Z" fill="#7cb342" stroke="#5f8f2f" stroke-width="1.4"/>
       <ellipse cx="664" cy="614" rx="50" ry="9" fill="#8bc34a" stroke="#5f8f2f" stroke-width="1.4"/>
-      <text x="664" y="726" text-anchor="middle" class="b-label" font-size="13" fill="#dfeecb">Amazon S3</text>
+      <text x="664" y="726" text-anchor="middle" class="b-label" font-size="13" fill="#4a6320">Amazon S3</text>
     </g>
 
     <!-- Beacon -->
@@ -176,7 +176,7 @@
       <text x="1117" y="456" text-anchor="middle" font-size="11">connector</text>
     </g>
     <path class="edge flow stream" d="M1192,424 L1320,424" marker-end="url(#arrowCyan)"/>
-    <text class="flow-label" x="1210" y="412" fill="#7fe9f7" font-size="11.5">Fanout Data Writes</text>
+    <text class="flow-label" x="1210" y="412" fill="#0e7490" font-size="11.5">Fanout Data Writes</text>
 
     <!-- Spark job -->
     <g class="shadow">
@@ -187,7 +187,7 @@
       <text x="1117" y="686" text-anchor="middle" font-size="11.5" font-weight="700">S3 Spark job</text>
     </g>
     <path class="edge flow batch" d="M1042,700 L724,700" marker-end="url(#arrowAmber)"/>
-    <text class="flow-label" x="812" y="690" fill="#f7cf6a" font-size="11.5">Read logs from S3</text>
+    <text class="flow-label" x="812" y="690" fill="#b45309" font-size="11.5">Read logs from S3</text>
     <path class="edge flow batch" d="M1192,652 L1260,652 L1260,700 L1320,700" marker-end="url(#arrowAmber)"/>
 
     <!-- Lakehouse cylinders -->
@@ -220,5 +220,5 @@
   </g>
 
   <!-- Footer -->
-  <text x="70" y="1285" font-family="Courier New, monospace" font-size="15" fill="#7b8cb0">Rendered from “Unified Observability for Traces — High-Level with Batch”  ·  Platform Tech Summit · August 2026</text>
+  <text x="70" y="1285" font-family="Courier New, monospace" font-size="15" fill="#5b6678">Rendered from “Unified Observability for Traces — High-Level with Batch”  ·  Platform Tech Summit · August 2026</text>
 </svg>
