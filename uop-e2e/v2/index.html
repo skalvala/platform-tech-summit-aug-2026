@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unified Observability for Traces — High-Level Design (with Batch)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f6f8fc;
+    --bg2: #eef2f9;
+    --panel: #ffffff;
+    --panel2: #f7f9fd;
+    --stroke: #dbe2ee;
+    --stroke-soft: #e7ecf5;
+    --text: #16233c;
+    --text-dim: #47566f;
+    --muted: #6b7890;
+    --cyan: #0891b2;
+    --cyan-deep: #0e7490;
+    --violet: #6d28d9;
+    --amber: #b45309;
+    --amber-deep: #92400e;
+    --green: #0f9d6a;
+    --green-soft: #0f9d6a;
+    --green-node: #d6f5df;
+    --green-node-stroke: #3fb765;
+    --s3: #7cb342;
+    --sticky: #ffd75e;
+    --sticky-ink: #4a3b00;
+    --danger: #dc2626;
+    --radius: 16px;
+    --shadow: 0 12px 34px rgba(20,30,60,.10);
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--text);
+    background:
+      radial-gradient(1200px 700px at 78% -8%, rgba(8,145,178,.06), transparent 60%),
+      radial-gradient(1000px 640px at 8% 4%, rgba(109,40,217,.05), transparent 55%),
+      linear-gradient(180deg, var(--bg), var(--bg2));
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1500px; margin: 0 auto; padding: 40px 28px 90px; }
+
+  /* ---------- Header ---------- */
+  header.masthead {
+    display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 26px; margin-bottom: 30px;
+    border-bottom: 1px solid var(--stroke);
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .28em;
+    text-transform: uppercase; color: var(--cyan);
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .eyebrow::before {
+    content: ""; width: 26px; height: 2px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+  }
+  h1.title {
+    margin: 0; font-size: clamp(26px, 3.4vw, 42px); font-weight: 800;
+    letter-spacing: -.02em; line-height: 1.08;
+    background: linear-gradient(120deg, #16233c 20%, #3a4a66 90%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  h1.title .with-batch { color: var(--amber); -webkit-text-fill-color: var(--amber); }
+  .subtitle { margin: 12px 0 0; color: var(--text-dim); font-size: 16px; max-width: 720px; line-height: 1.6; }
+  .meta-card {
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--stroke); border-radius: 14px;
+    padding: 16px 20px; min-width: 260px; box-shadow: var(--shadow);
+  }
+  .meta-row { display: flex; justify-content: space-between; gap: 20px; font-size: 13px; padding: 5px 0; }
+  .meta-row + .meta-row { border-top: 1px dashed var(--stroke-soft); }
+  .meta-row .k { color: var(--muted); font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; }
+  .meta-row .v { color: var(--text); font-weight: 600; text-align: right; }
+  .meta-row .v.pill { color: var(--cyan); }
+
+  /* ---------- Section chrome ---------- */
+  section { margin-top: 40px; }
+  .sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .sec-head h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+  .sec-head .idx {
+    font-family: var(--mono); font-size: 12px; color: var(--bg);
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-weight: 700;
+  }
+  .sec-head .rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--stroke), transparent); }
+
+  /* ---------- Diagram panel ---------- */
+  .diagram-panel {
+    background:
+      radial-gradient(900px 480px at 20% 0%, rgba(8,145,178,.05), transparent 60%),
+      linear-gradient(180deg, #ffffff, #f4f7fc);
+    border: 1px solid var(--stroke); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 18px; position: relative; overflow: hidden;
+  }
+  .diagram-panel::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(20,30,60,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20,30,60,.035) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none;
+  }
+  .diagram-scroll { position: relative; overflow-x: auto; }
+  svg.arch { display: block; width: 100%; height: auto; min-width: 1120px; }
+
+  /* Legend */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center;
+    margin: 4px 4px 16px; position: relative; z-index: 2;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-dim); }
+  .legend .swatch { width: 26px; height: 12px; border-radius: 4px; }
+  .legend .line { width: 30px; height: 0; border-top-width: 3px; border-top-style: solid; }
+  .legend .line.stream { border-color: var(--cyan); }
+  .legend .line.batch { border-color: var(--amber); border-top-style: dashed; }
+  .legend .line.tel { border-color: var(--green-soft); }
+  .legend .line.bidi { border-color: var(--violet); }
+
+  /* ---------- Flow narrative ---------- */
+  .flow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .step {
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--stroke); border-left: 3px solid var(--cyan);
+    border-radius: 12px; padding: 16px 18px; position: relative;
+  }
+  .step.batch { border-left-color: var(--amber); }
+  .step.tel { border-left-color: var(--green-soft); }
+  .step .n {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--cyan);
+    letter-spacing: .05em;
+  }
+  .step.batch .n { color: var(--amber); }
+  .step.tel .n { color: var(--green-soft); }
+  .step h3 { margin: 6px 0 6px; font-size: 15px; font-weight: 700; }
+  .step p { margin: 0; color: var(--text-dim); font-size: 13.5px; line-height: 1.6; }
+  .step code { font-family: var(--mono); font-size: 12px; color: var(--violet); background: rgba(167,139,250,.1); padding: 1px 6px; border-radius: 5px; }
+
+  /* ---------- Component tables ---------- */
+  .zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 18px; }
+  .zone {
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--stroke); border-radius: 14px; overflow: hidden;
+  }
+  .zone .zh { padding: 14px 18px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--stroke); }
+  .zone .zh .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .zone .zh .tag { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--muted);
+    border: 1px solid var(--stroke); padding: 2px 8px; border-radius: 20px; letter-spacing: .04em; }
+  .zone ul { list-style: none; margin: 0; padding: 8px 18px 16px; }
+  .zone li { padding: 10px 0; border-bottom: 1px dashed var(--stroke-soft); font-size: 13.5px; }
+  .zone li:last-child { border-bottom: none; }
+  .zone li b { color: var(--text); font-weight: 600; }
+  .zone li span { display: block; color: var(--muted); font-size: 12.5px; margin-top: 3px; line-height: 1.55; }
+
+  /* ---------- Callout ---------- */
+  .callout {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: linear-gradient(180deg, rgba(245,179,1,.08), rgba(245,179,1,.03));
+    border: 1px solid rgba(245,179,1,.35); border-radius: 12px; padding: 16px 18px; margin-top: 16px;
+  }
+  .callout .ic { font-size: 20px; line-height: 1; }
+  .callout p { margin: 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.6; }
+  .callout b { color: var(--amber); }
+
+  footer {
+    margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--stroke);
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;
+    color: var(--muted); font-size: 12.5px;
+  }
+  footer .src { font-family: var(--mono); }
+  footer a { color: var(--cyan); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ---------- SVG node styling ---------- */
+  .arch text { font-family: var(--sans); fill: #10203a; }
+  .n-label { font-weight: 700; }
+  .boundary-label { font-family: var(--sans); font-weight: 700; }
+  .flow-label { font-family: var(--mono); font-size: 13px; }
+  .edge { fill: none; stroke-width: 2.4; }
+  .edge.tel { stroke: var(--green); }
+  .edge.stream { stroke: var(--cyan); }
+  .edge.batch { stroke: var(--amber); stroke-dasharray: 9 7; }
+  .edge.bidi { stroke: var(--violet); }
+  .edge.feed { stroke: #64789e; }
+  .dash-anim { stroke-dasharray: 7 9; animation: dash 1.1s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -32; } }
+  .node-shadow { filter: drop-shadow(0 6px 14px rgba(20,30,60,.16)); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 26px 14px 70px; }
+    header.masthead { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Platform Tech Summit · Aug 2026 · High-Level Design</div>
+      <h1 class="title">Unified Observability for Traces<br /><span class="with-batch">High-Level Architecture · with Batch</span></h1>
+      <p class="subtitle">
+        End-to-end telemetry pipeline that carries customer-facing traces, metrics, and logs
+        from Core FD &amp; Near-Core services through the CDP FD Ingestion Platform into a multi-tenant
+        Data Cloud Lakehouse — combining a <b style="color:var(--green)">real-time streaming path</b>
+        and an <b style="color:var(--amber)">S3-backed batch path</b> for consumption by Unified Observability and headless.
+      </p>
+      <p class="subtitle" style="margin-top:8px">
+        <b style="color:var(--cyan)">Supported today:</b> Traces &amp; Error Logs.
+        <b style="color:var(--amber)">Metrics</b> is planned future work.
+      </p>
+    </div>
+    <div class="meta-card">
+      <div class="meta-row"><span class="k">DOCUMENT</span><span class="v">HLD — Traces (Batch)</span></div>
+      <div class="meta-row"><span class="k">OWNER</span><span class="v">Seshank Kalvala</span></div>
+      <div class="meta-row"><span class="k">STATUS</span><span class="v pill">Draft · Review</span></div>
+      <div class="meta-row"><span class="k">RENDERED</span><span class="v">2026-08-20</span></div>
+      <div class="meta-row"><span class="k">SOURCE</span><span class="v" style="font-size:11px">Unified Observability for Traces — High-Level with Batch</span></div>
+    </div>
+  </header>
+
+  <!-- ===================== DIAGRAM ===================== -->
+  <section>
+    <div class="sec-head">
+      <span class="idx">01</span>
+      <h2>Reference Architecture</h2>
+      <span class="rule"></span>
+    </div>
+
+    <div class="legend">
+      <span class="item"><span class="swatch" style="background:var(--green-node);border:1px solid var(--green-node-stroke)"></span> Service / Compute</span>
+      <span class="item"><span class="swatch" style="background:#eef3fb;border:1px solid #c3d0e6"></span> Store / Sink</span>
+      <span class="item"><span class="line tel"></span> Telemetry ingest</span>
+      <span class="item"><span class="line stream"></span> Real-time / streaming</span>
+      <span class="item"><span class="line batch"></span> Planned: Batch (S3 → Spark)</span>
+      <span class="item"><span class="line bidi"></span> Query experience layer</span>
+    </div>
+
+    <div class="diagram-panel">
+      <div class="diagram-scroll">
+        <svg class="arch" viewBox="0 0 1800 1010" role="img"
+             aria-label="Unified Observability for Traces high-level architecture with batch">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="context-stroke"></path>
+            </marker>
+            <marker id="arrowGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#0f9d6a"></path>
+            </marker>
+            <marker id="arrowCyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#0891b2"></path>
+            </marker>
+            <marker id="arrowAmber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#b45309"></path>
+            </marker>
+            <marker id="arrowViolet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"></path>
+            </marker>
+            <marker id="arrowFeed" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#64789e"></path>
+            </marker>
+            <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e4faea"></stop><stop offset="1" stop-color="#cdefd8"></stop>
+            </linearGradient>
+            <linearGradient id="gSticky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffe07a"></stop><stop offset="1" stop-color="#ffcf3f"></stop>
+            </linearGradient>
+            <linearGradient id="gStore" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"></stop><stop offset="1" stop-color="#e9eff9"></stop>
+            </linearGradient>
+            <linearGradient id="gLake" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d7e7ff"></stop><stop offset="1" stop-color="#bcd3f5"></stop>
+            </linearGradient>
+          </defs>
+
+          <!-- ===== Boundary containers ===== -->
+          <!-- Falcon Instance 1 (outer): Instrumentation + Ingestion Platform -->
+          <rect x="48" y="150" width="754" height="712" rx="18" fill="rgba(109,40,217,.045)"
+                stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="191" y="182" text-anchor="middle" fill="#6d28d9" font-size="20" font-weight="800">Falcon Instance 1</text>
+
+          <!-- Instrumentation (wraps Core FD + Near Core Services) -->
+          <rect x="60" y="214" width="264" height="632" rx="14" fill="rgba(51,78,104,.05)"
+                stroke="#5b7089" stroke-width="1.5" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="191" y="240" text-anchor="middle" fill="#334e68" font-size="18" font-weight="800">Instrumentation</text>
+          <text x="191" y="260" text-anchor="middle" fill="#8a94a6" font-size="12" font-style="italic">(VERTICAL #1)</text>
+
+          <!-- Falcon Instance 2 (outer): Data Cloud + Consumption -->
+          <rect x="814" y="150" width="956" height="712" rx="18" fill="rgba(109,40,217,.045)"
+                stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="1750" y="184" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
+
+          <!-- CDP FD (groups Ingestion Platform + Data Cloud) -->
+          <rect x="364" y="212" width="1202" height="626" rx="16" fill="rgba(51,78,104,.055)"
+                stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="965" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+
+          <!-- Ingestion Platform inner -->
+          <rect x="372" y="258" width="404" height="562" rx="14" fill="rgba(8,145,178,.05)"
+                stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="574" y="292" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
+          <text x="574" y="312" text-anchor="middle" fill="#6a7893" font-size="12" font-style="italic">(VERTICAL #2)</text>
+
+          <!-- Data Cloud inner -->
+          <rect x="836" y="258" width="720" height="562" rx="14" fill="rgba(8,145,178,.04)"
+                stroke="#4a7f97" stroke-width="1.5" stroke-dasharray="6 6"></rect>
+          <text class="boundary-label" x="1196" y="292" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud</text>
+          <text x="1196" y="312" text-anchor="middle" fill="#6a7893" font-size="12" font-style="italic">(VERTICAL #3)</text>
+
+          <!-- Lakehouse inner -->
+          <rect x="1320" y="330" width="196" height="470" rx="12" fill="rgba(71,96,137,.07)"
+                stroke="#476089" stroke-width="1.4" stroke-dasharray="6 6"></rect>
+          <text class="boundary-label" x="1418" y="362" text-anchor="middle" fill="#3a5878" font-size="18">Lakehouse</text>
+
+          <!-- Consumption Layer -->
+          <rect x="1572" y="330" width="176" height="470" rx="12" fill="rgba(109,40,217,.05)"
+                stroke="#8b73c4" stroke-width="1.4" stroke-dasharray="6 6"></rect>
+          <text class="boundary-label" x="1660" y="362" text-anchor="middle" fill="#6d28d9" font-size="16">Consumption Layer</text>
+          <text x="1660" y="382" text-anchor="middle" fill="#6a7893" font-size="11" font-style="italic">(VERTICAL #4)</text>
+
+          <!-- Near Core Services -->
+          <rect x="70" y="560" width="232" height="272" rx="12" fill="rgba(15,157,106,.06)"
+                stroke="#3f7a56" stroke-width="1.4" stroke-dasharray="6 6"></rect>
+          <text class="boundary-label" x="186" y="592" text-anchor="middle" fill="#0f9d6a" font-size="15">Near Core Services</text>
+
+          <!-- (sticky-note actors and their feed arrows removed) -->
+
+          <!-- ===== Core ===== -->
+          <g class="node-shadow">
+            <rect x="70" y="318" width="232" height="212" rx="10" fill="#f4f7fc" stroke="#c3d0e6" stroke-width="1.5"></rect>
+            <text x="186" y="346" text-anchor="middle" class="n-label" font-size="16">Core FD</text>
+            <g font-size="13" text-anchor="middle">
+              <rect x="96" y="360" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="380">Flow</text>
+              <rect x="96" y="398" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="418">APEX</text>
+              <rect x="96" y="436" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="456">Prompt Builder</text>
+              <rect x="96" y="474" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="497" font-weight="700" letter-spacing="2">· · · · ·</text>
+            </g>
+          </g>
+          <!-- green external input -->
+          <path class="edge" style="stroke:#1faa4b" d="M14,406 L70,406" marker-end="url(#arrowGreen)"></path>
+
+          <!-- ===== Near Core Services rows ===== -->
+          <g font-size="13" text-anchor="middle">
+            <rect x="92" y="606" width="188" height="34" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="628">DC Services</text>
+            <rect x="92" y="650" width="188" height="34" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="672">Planner Service</text>
+            <rect x="92" y="694" width="188" height="34" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="716">LLMG Service</text>
+            <rect x="92" y="738" width="188" height="34" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="760">MCP</text>
+          </g>
+
+          <!-- ===== Telemetry merge into Ingestion Service ===== -->
+          <!-- Core out -->
+          <path class="edge tel dash-anim" d="M302,424 L338,424 L338,470" marker-end="url(#arrowGreen)" style="marker-end:none"></path>
+          <!-- Near core out -->
+          <path class="edge tel dash-anim" d="M302,672 L338,672 L338,470" ></path>
+          <!-- merged into ingestion service -->
+          <path class="edge tel dash-anim" d="M338,470 L338,466 L406,466" marker-end="url(#arrowGreen)"></path>
+          <text class="flow-label" x="352" y="500" fill="#0f9d6a" font-size="12">Customer-facing</text>
+          <text class="flow-label" x="352" y="516" fill="#0f9d6a" font-size="12">Telemetry Data</text>
+
+          <!-- ===== Ingestion Service (funnel/triangle) ===== -->
+          <g class="node-shadow">
+            <path d="M410,428 L516,428 L463,520 Z" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.6"></path>
+            <text x="463" y="462" text-anchor="middle" class="n-label" font-size="13">Ingestion</text>
+            <text x="463" y="480" text-anchor="middle" font-size="12">Service</text>
+          </g>
+
+          <!-- Ingestion Service -> Ajna -->
+          <path class="edge tel dash-anim" d="M516,455 L604,455" marker-end="url(#arrowGreen)"></path>
+
+          <!-- ===== Ajna ===== -->
+          <g class="node-shadow">
+            <rect x="604" y="410" width="120" height="104" rx="10" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.6"></rect>
+            <text x="664" y="468" text-anchor="middle" class="n-label" font-size="17">Ajna</text>
+          </g>
+
+          <!-- Ajna -> Beacon (Metrics/Traces/Error Logs), crosses into Falcon -->
+          <path class="edge stream dash-anim" d="M724,440 L800,440 L800,414 L884,414" marker-end="url(#arrowCyan)"></path>
+          <text class="flow-label" x="742" y="392" fill="#0e7490" font-size="12">Traces · Error Logs</text>
+          <text class="flow-label" x="742" y="408" fill="#b45309" font-size="11.5" font-style="italic">Metrics — planned</text>
+
+          <!-- Ajna -> S3 (Info Logs) -->
+          <path class="edge batch dash-anim" d="M664,514 L664,600" marker-end="url(#arrowAmber)"></path>
+          <text class="flow-label" x="676" y="560" fill="#b45309" font-size="12">Info Logs</text>
+
+          <!-- ===== Amazon S3 (bucket) ===== -->
+          <g class="node-shadow">
+            <path d="M614,614 h100 l-10,74 a40,9 0 0 1 -80,0 Z" fill="#7cb342" stroke="#5f8f2f" stroke-width="1.4"></path>
+            <ellipse cx="664" cy="614" rx="50" ry="9" fill="#8bc34a" stroke="#5f8f2f" stroke-width="1.4"></ellipse>
+            <text x="664" y="726" text-anchor="middle" class="n-label" font-size="13" fill="#4a6320">Amazon S3</text>
+          </g>
+
+          <!-- ===== Beacon ===== -->
+          <g class="node-shadow">
+            <rect x="884" y="382" width="126" height="66" rx="10" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.6"></rect>
+            <text x="947" y="421" text-anchor="middle" class="n-label" font-size="16">Beacon</text>
+          </g>
+
+          <!-- Beacon -> Ajna Topics -->
+          <path class="edge stream dash-anim" d="M947,448 L947,520" marker-end="url(#arrowCyan)"></path>
+
+          <!-- ===== Ajna Topics (cylinder) ===== -->
+          <g class="node-shadow">
+            <path d="M892,532 h110 v74 a55,12 0 0 1 -110,0 Z" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.5"></path>
+            <ellipse cx="947" cy="532" rx="55" ry="12" fill="#e4faea" stroke="#3fb765" stroke-width="1.5"></ellipse>
+            <text x="947" y="566" text-anchor="middle" font-size="11.5" font-weight="700">Ajna Topics</text>
+            <text x="947" y="582" text-anchor="middle" font-size="10">sharded by</text>
+            <text x="947" y="596" text-anchor="middle" font-size="10">CDP Tenants</text>
+          </g>
+
+          <!-- Ajna Topics -> Streaming connector -->
+          <path class="edge stream dash-anim" d="M1002,556 L1044,556 L1044,470" marker-end="url(#arrowCyan)"></path>
+
+          <!-- ===== Observability Multi-Tenant Streaming connector (stacked cards) ===== -->
+          <g class="node-shadow">
+            <rect x="1058" y="356" width="150" height="104" rx="10" fill="#bfe9cb" stroke="#3fb765"></rect>
+            <rect x="1050" y="364" width="150" height="104" rx="10" fill="#cdefd8" stroke="#3fb765"></rect>
+            <rect x="1042" y="372" width="150" height="104" rx="10" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.6"></rect>
+            <text x="1117" y="404" text-anchor="middle" font-size="11.5" font-weight="700">Observability</text>
+            <text x="1117" y="422" text-anchor="middle" font-size="11.5" font-weight="700">Multi-Tenant</text>
+            <text x="1117" y="440" text-anchor="middle" font-size="11">Streaming</text>
+            <text x="1117" y="456" text-anchor="middle" font-size="11">connector</text>
+          </g>
+
+          <!-- Streaming connector -> Lakehouse (Fanout Data Writes) -->
+          <path class="edge stream dash-anim" d="M1192,424 L1320,424" marker-end="url(#arrowCyan)"></path>
+          <text class="flow-label" x="1210" y="412" fill="#0e7490" font-size="11.5">Fanout Data Writes</text>
+
+          <!-- ===== Single-Tenant S3 Spark job (stacked cards) ===== -->
+          <g class="node-shadow">
+            <rect x="1058" y="612" width="150" height="104" rx="10" fill="#bfe9cb" stroke="#3fb765"></rect>
+            <rect x="1050" y="620" width="150" height="104" rx="10" fill="#cdefd8" stroke="#3fb765"></rect>
+            <rect x="1042" y="628" width="150" height="104" rx="10" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.6"></rect>
+            <text x="1117" y="668" text-anchor="middle" font-size="11.5" font-weight="700">Single-Tenant</text>
+            <text x="1117" y="686" text-anchor="middle" font-size="11.5" font-weight="700">S3 Spark job</text>
+          </g>
+
+          <!-- Spark job reads logs from S3 (long arrow back to S3) -->
+          <path class="edge batch dash-anim" d="M709,655 L1042,655" marker-end="url(#arrowAmber)"></path>
+          <text class="flow-label" x="812" y="645" fill="#b45309" font-size="11.5">Read logs from S3</text>
+
+          <!-- Spark job -> Lakehouse -->
+          <path class="edge batch dash-anim" d="M1192,652 L1260,652 L1260,700 L1320,700" marker-end="url(#arrowAmber)"></path>
+
+          <!-- ===== Lakehouse cylinders ===== -->
+          <g class="node-shadow">
+            <g>
+              <path d="M1348,388 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"></path>
+              <ellipse cx="1418" cy="388" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"></ellipse>
+              <text x="1418" y="416" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tenant1</text>
+            </g>
+            <g>
+              <path d="M1348,470 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"></path>
+              <ellipse cx="1418" cy="470" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"></ellipse>
+              <text x="1418" y="498" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tenant2</text>
+            </g>
+            <text x="1418" y="566" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="2">· · · · ·</text>
+            <g>
+              <path d="M1348,614 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"></path>
+              <ellipse cx="1418" cy="614" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"></ellipse>
+              <text x="1418" y="642" text-anchor="middle" font-size="12" font-weight="700">Data Cloud TenantN</text>
+            </g>
+          </g>
+
+          <!-- Lakehouse <-> Consumption Layer -->
+          <path class="edge bidi dash-anim" d="M1516,556 L1572,556" marker-start="url(#arrowViolet)" marker-end="url(#arrowViolet)"></path>
+
+          <!-- ===== Consumption Layer (parallelograms) ===== -->
+          <g class="node-shadow">
+            <polygon points="1600,410 1730,410 1712,478 1582,478" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"></polygon>
+            <text x="1656" y="440" text-anchor="middle" font-size="12" font-weight="700">Unified</text>
+            <text x="1656" y="458" text-anchor="middle" font-size="12" font-weight="700">Observability</text>
+          </g>
+          <g class="node-shadow">
+            <polygon points="1600,600 1730,600 1712,668 1582,668" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"></polygon>
+            <text x="1656" y="630" text-anchor="middle" font-size="12" font-weight="700">headless</text>
+          </g>
+
+        </svg>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="ic">⚡</span>
+      <p><b>Two coordinated paths, one lakehouse.</b> Structured signals — <b>traces and error logs today</b>
+      (<b style="color:var(--amber)">metrics planned</b>) —
+      travel the <b style="color:var(--green)">real-time streaming path</b> (Beacon → tenant-sharded Ajna Topics →
+      Observability Multi-Tenant Streaming connector → fan-out writes). High-volume <b>Info Logs</b> take the
+      <b>batch path</b> (Ajna → Amazon S3 → Single-Tenant S3 Spark job → Lakehouse). Both converge on the
+      per-tenant Data Cloud tables that power <b>Unified Observability</b> and <b>headless</b> access.</p>
+    </div>
+  </section>
+
+  <!-- ===================== FLOW NARRATIVE ===================== -->
+  <section>
+    <div class="sec-head">
+      <span class="idx">02</span>
+      <h2>How the Data Flows</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="flow-grid">
+      <div class="step tel">
+        <div class="n">STEP 01 · INSTRUMENT</div>
+        <h3>Core &amp; Near-Core emit telemetry</h3>
+        <p><b>Event Monitoring</b> instruments <code>Flow</code>, <code>APEX</code>, <code>Prompt Builder</code>
+        and Near-Core services (<code>DC</code>, <code>Planner</code>, <code>LLMG</code>, <code>MCP</code>),
+        producing customer-facing telemetry.</p>
+      </div>
+      <div class="step tel">
+        <div class="n">STEP 02 · INGEST</div>
+        <h3>Ingestion Service → Ajna</h3>
+        <p>Telemetry lands in the <b>Ingestion Service</b> (part of the <b>Ingestion Platform</b>) — part of
+        <b>CDP FD</b> but running inside <b>Falcon Instance 1</b> — and is funneled into <b>Ajna</b>, the
+        ingestion backbone.</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 03 · SPLIT (STREAMING)</div>
+        <h3>Traces &amp; Error Logs → Beacon</h3>
+        <p>Ajna routes structured signals to <b>Beacon</b> inside <b>Falcon Instance 2</b>, entering the
+        real-time path for low-latency processing. <b>Traces and Error Logs are supported today</b>;
+        <b style="color:var(--amber)">Metrics is planned future work</b>.</p>
+      </div>
+      <div class="step batch">
+        <div class="n">STEP 03 · SPLIT (BATCH)</div>
+        <h3>Info Logs → Amazon S3</h3>
+        <p>High-volume <b>Info Logs</b> are written to <b>Amazon S3</b>, decoupling bulk log storage from the
+        latency-sensitive streaming path.</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 04 · SHARD</div>
+        <h3>Ajna Topics, sharded by CDP tenant</h3>
+        <p>Beacon publishes to <b>Ajna Topics sharded by CDP Tenants</b>, preserving multi-tenant isolation
+        as data enters Data Cloud.</p>
+      </div>
+      <div class="step">
+        <div class="n">STEP 05 · STREAM</div>
+        <h3>Multi-Tenant Streaming connector</h3>
+        <p>The <b>Observability Multi-Tenant Streaming connector</b> consumes the sharded topics and performs
+        <b>fan-out data writes</b> into the per-tenant Lakehouse tables.</p>
+      </div>
+      <div class="step batch">
+        <div class="n">STEP 06 · BATCH LOAD</div>
+        <h3>Single-Tenant S3 Spark job</h3>
+        <p>A <b>Single-Tenant S3 Spark job</b> reads logs back from S3 and loads them into the corresponding
+        <b>Data Cloud TenantN</b> table — a per-tenant batch write.</p>
+      </div>
+      <div class="step bidi" style="border-left-color:var(--violet)">
+        <div class="n" style="color:var(--violet)">STEP 07 · CONSUME</div>
+        <h3>Lakehouse → Unified Observability &amp; headless</h3>
+        <p>The <b>Consumption Layer</b> queries the Lakehouse: <b>Unified Observability</b> for analytics and
+        <b>headless</b> for conversational, agentic access.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COMPONENT REFERENCE ===================== -->
+  <section>
+    <div class="sec-head">
+      <span class="idx">03</span>
+      <h2>Components by Zone</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="zones">
+      <div class="zone">
+        <div class="zh"><span class="dot" style="background:var(--green)"></span> Falcon Instance 1 · Core FD &amp; Near-Core <span class="tag">SALESFORCE CORE</span></div>
+        <ul>
+          <li><b>Instrumentation (Event Monitoring)</b><span>Emits customer-facing telemetry from platform runtime.</span></li>
+          <li><b>Core FD</b><span>Flow, APEX, Prompt Builder and other first-class runtimes.</span></li>
+          <li><b>Near Core Services</b><span>DC Services, Planner Service, LLMG Service, MCP.</span></li>
+        </ul>
+      </div>
+      <div class="zone">
+        <div class="zh"><span class="dot" style="background:var(--cyan)"></span> CDP FD · Ingestion Platform (in Falcon Instance 1) <span class="tag">PLATFORM</span></div>
+        <ul>
+          <li><b>Ingestion Service</b><span>Entry funnel for customer-facing telemetry data.</span></li>
+          <li><b>Ajna</b><span>Ingestion backbone; splits structured signals vs. info logs.</span></li>
+          <li><b>Amazon S3</b><span>Durable object store for high-volume Info Logs (batch source).</span></li>
+        </ul>
+      </div>
+      <div class="zone">
+        <div class="zh"><span class="dot" style="background:var(--violet)"></span> Falcon Instance 2 · Data Cloud <span class="tag">MULTI-TENANT</span></div>
+        <ul>
+          <li><b>Beacon</b><span>Real-time entry point for metrics, traces &amp; error logs.</span></li>
+          <li><b>Ajna Topics</b><span>Streams sharded by CDP tenant for isolation.</span></li>
+          <li><b>Observability Multi-Tenant Streaming connector</b><span>Fan-out writer into per-tenant lakehouse tables.</span></li>
+          <li><b>Single-Tenant S3 Spark job</b><span>Batch loader; reads S3 logs into Data Cloud TenantN.</span></li>
+        </ul>
+      </div>
+      <div class="zone">
+        <div class="zh"><span class="dot" style="background:#6f9bff"></span> Lakehouse &amp; Consumption <span class="tag">DATA CLOUD</span></div>
+        <ul>
+          <li><b>Lakehouse (Data Cloud Tenant1…TenantN)</b><span>Per-tenant tables — the unified observability store.</span></li>
+          <li><b>Unified Observability</b><span>Analytics &amp; reporting surface over the lakehouse.</span></li>
+          <li><b>headless</b><span>Agentic, conversational access to observability data.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="src">Rendered from: “Unified Observability for Traces — High-Level with Batch”</span>
+    <span>Platform Tech Summit · August 2026 · High-Level Design · <a href="../">back to summit</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
