@@ -123,7 +123,7 @@
   .legend .item { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-dim); }
   .legend .swatch { width: 26px; height: 12px; border-radius: 4px; }
   .legend .line { width: 30px; height: 0; border-top-width: 3px; border-top-style: solid; }
-  .legend .line.stream { border-color: var(--green-soft); }
+  .legend .line.stream { border-color: var(--cyan); }
   .legend .line.batch { border-color: var(--amber); border-top-style: dashed; }
   .legend .line.tel { border-color: var(--green-soft); }
   .legend .line.bidi { border-color: var(--violet); }
@@ -132,13 +132,13 @@
   .flow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
   .step {
     background: linear-gradient(180deg, var(--panel), var(--panel2));
-    border: 1px solid var(--stroke); border-left: 3px solid var(--green-soft);
+    border: 1px solid var(--stroke); border-left: 3px solid var(--cyan);
     border-radius: 12px; padding: 16px 18px; position: relative;
   }
   .step.batch { border-left-color: var(--amber); }
   .step.tel { border-left-color: var(--green-soft); }
   .step .n {
-    font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--green);
+    font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--cyan);
     letter-spacing: .05em;
   }
   .step.batch .n { color: var(--amber); }
@@ -190,7 +190,7 @@
   .flow-label { font-family: var(--mono); font-size: 13px; }
   .edge { fill: none; stroke-width: 2.4; }
   .edge.tel { stroke: var(--green); }
-  .edge.stream { stroke: var(--green); }
+  .edge.stream { stroke: var(--cyan); }
   .edge.batch { stroke: var(--amber); stroke-dasharray: 9 7; }
   .edge.bidi { stroke: var(--violet); }
   .edge.feed { stroke: #64789e; }
@@ -237,7 +237,6 @@
     </div>
 
     <div class="legend">
-      <span class="item"><span class="swatch" style="background:var(--sticky)"></span> Actor / Platform</span>
       <span class="item"><span class="swatch" style="background:var(--green-node);border:1px solid var(--green-node-stroke)"></span> Service / Compute</span>
       <span class="item"><span class="swatch" style="background:#eef3fb;border:1px solid #c3d0e6"></span> Store / Sink</span>
       <span class="item"><span class="line tel"></span> Telemetry ingest</span>
@@ -258,7 +257,7 @@
               <path d="M0,0 L10,5 L0,10 z" fill="#0f9d6a"></path>
             </marker>
             <marker id="arrowCyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="#0f9d6a"></path>
+              <path d="M0,0 L10,5 L0,10 z" fill="#0891b2"></path>
             </marker>
             <marker id="arrowAmber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="#b45309"></path>
@@ -324,26 +323,7 @@
                 stroke="#3f7a56" stroke-width="1.4" stroke-dasharray="6 6"></rect>
           <text class="boundary-label" x="186" y="592" text-anchor="middle" fill="#0f9d6a" font-size="15">Near Core Services</text>
 
-          <!-- ===== Sticky notes (actors/platforms) ===== -->
-          <g class="node-shadow">
-            <rect x="86" y="28" width="200" height="66" rx="6" fill="url(#gSticky)"></rect>
-            <text x="186" y="56" text-anchor="middle" class="n-label" font-size="14">Instrumentation</text>
-            <text x="186" y="76" text-anchor="middle" font-size="12" fill="#5a4800">(Event Monitoring)</text>
-          </g>
-          <g class="node-shadow">
-            <rect x="474" y="28" width="200" height="66" rx="6" fill="url(#gSticky)"></rect>
-            <text x="574" y="56" text-anchor="middle" class="n-label" font-size="14">Ingestion Platform</text>
-            <text x="574" y="76" text-anchor="middle" font-size="12" fill="#5a4800">(Platform)</text>
-          </g>
-          <g class="node-shadow">
-            <rect x="1108" y="28" width="184" height="66" rx="6" fill="url(#gSticky)"></rect>
-            <text x="1200" y="67" text-anchor="middle" class="n-label" font-size="15">Data Cloud</text>
-          </g>
-
-          <!-- sticky feed arrows -->
-          <path class="edge feed" d="M186,94 L186,318" marker-end="url(#arrowFeed)"></path>
-          <path class="edge feed" d="M574,94 L574,258" marker-end="url(#arrowFeed)"></path>
-          <path class="edge feed" d="M1200,94 L1200,258" marker-end="url(#arrowFeed)"></path>
+          <!-- (sticky-note actors and their feed arrows removed) -->
 
           <!-- ===== Core ===== -->
           <g class="node-shadow">
@@ -395,8 +375,8 @@
 
           <!-- Ajna -> Beacon (Metrics/Traces/Error Logs), crosses into Falcon -->
           <path class="edge stream dash-anim" d="M724,440 L800,440 L800,414 L884,414" marker-end="url(#arrowCyan)"></path>
-          <text class="flow-label" x="742" y="392" fill="#0f9d6a" font-size="12">Metrics · Traces</text>
-          <text class="flow-label" x="742" y="408" fill="#0f9d6a" font-size="12">Error Logs</text>
+          <text class="flow-label" x="742" y="392" fill="#0e7490" font-size="12">Metrics · Traces</text>
+          <text class="flow-label" x="742" y="408" fill="#0e7490" font-size="12">Error Logs</text>
 
           <!-- Ajna -> S3 (Info Logs) -->
           <path class="edge batch dash-anim" d="M664,514 L664,600" marker-end="url(#arrowAmber)"></path>
@@ -443,7 +423,7 @@
 
           <!-- Streaming connector -> Lakehouse (Fanout Data Writes) -->
           <path class="edge stream dash-anim" d="M1192,424 L1320,424" marker-end="url(#arrowCyan)"></path>
-          <text class="flow-label" x="1210" y="412" fill="#0f9d6a" font-size="11.5">Fanout Data Writes</text>
+          <text class="flow-label" x="1210" y="412" fill="#0e7490" font-size="11.5">Fanout Data Writes</text>
 
           <!-- ===== Single-Tenant S3 Spark job (stacked cards) ===== -->
           <g class="node-shadow">
@@ -466,18 +446,18 @@
             <g>
               <path d="M1348,388 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"></path>
               <ellipse cx="1418" cy="388" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"></ellipse>
-              <text x="1418" y="416" text-anchor="middle" font-size="12" font-weight="700">Data Cloud T1</text>
+              <text x="1418" y="416" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tenant1</text>
             </g>
             <g>
               <path d="M1348,470 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"></path>
               <ellipse cx="1418" cy="470" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"></ellipse>
-              <text x="1418" y="498" text-anchor="middle" font-size="12" font-weight="700">Data Cloud T2</text>
+              <text x="1418" y="498" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tenant2</text>
             </g>
             <text x="1418" y="566" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="2">· · · · ·</text>
             <g>
               <path d="M1348,614 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"></path>
               <ellipse cx="1418" cy="614" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"></ellipse>
-              <text x="1418" y="642" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tn</text>
+              <text x="1418" y="642" text-anchor="middle" font-size="12" font-weight="700">Data Cloud TenantN</text>
             </g>
           </g>
 
@@ -558,7 +538,7 @@
         <div class="n">STEP 06 · BATCH LOAD</div>
         <h3>Single-Tenant S3 Spark job</h3>
         <p>A <b>Single-Tenant S3 Spark job</b> reads logs back from S3 and loads them into the corresponding
-        <b>Data Cloud Tn</b> table — a per-tenant batch write.</p>
+        <b>Data Cloud TenantN</b> table — a per-tenant batch write.</p>
       </div>
       <div class="step bidi" style="border-left-color:var(--violet)">
         <div class="n" style="color:var(--violet)">STEP 07 · CONSUME</div>
@@ -599,13 +579,13 @@
           <li><b>Beacon</b><span>Real-time entry point for metrics, traces &amp; error logs.</span></li>
           <li><b>Ajna Topics</b><span>Streams sharded by CDP tenant for isolation.</span></li>
           <li><b>Observability Multi-Tenant Streaming connector</b><span>Fan-out writer into per-tenant lakehouse tables.</span></li>
-          <li><b>Single-Tenant S3 Spark job</b><span>Batch loader; reads S3 logs into Data Cloud Tn.</span></li>
+          <li><b>Single-Tenant S3 Spark job</b><span>Batch loader; reads S3 logs into Data Cloud TenantN.</span></li>
         </ul>
       </div>
       <div class="zone">
         <div class="zh"><span class="dot" style="background:#6f9bff"></span> Lakehouse &amp; Consumption <span class="tag">DATA CLOUD</span></div>
         <ul>
-          <li><b>Lakehouse (Data Cloud T1…Tn)</b><span>Per-tenant tables — the unified observability store.</span></li>
+          <li><b>Lakehouse (Data Cloud Tenant1…TenantN)</b><span>Per-tenant tables — the unified observability store.</span></li>
           <li><b>Unified Observability</b><span>Analytics &amp; reporting surface over the lakehouse.</span></li>
           <li><b>headless</b><span>Agentic, conversational access to observability data.</span></li>
         </ul>

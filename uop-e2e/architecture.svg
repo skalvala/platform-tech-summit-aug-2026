@@ -2,7 +2,7 @@
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64789e"/></marker>
     <marker id="arrowGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0f9d6a"/></marker>
-    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0f9d6a"/></marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0891b2"/></marker>
     <marker id="arrowAmber" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
     <marker id="arrowViolet" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker>
     <marker id="arrowFeed" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64789e"/></marker>
@@ -18,7 +18,7 @@
       .flow-label { font-family:"Courier New", monospace; }
       .edge { fill:none; stroke-width:2.6; }
       .feed { stroke:#64789e; stroke-width:2.4; }
-      .tel { stroke:#0f9d6a; } .stream { stroke:#0f9d6a; } .batch { stroke:#b45309; } .bidi { stroke:#6d28d9; }
+      .tel { stroke:#0f9d6a; } .stream { stroke:#0891b2; } .batch { stroke:#b45309; } .bidi { stroke:#6d28d9; }
       .flow { stroke-dasharray:10 10; animation: dash 1s linear infinite; }
       @keyframes dash { to { stroke-dashoffset:-20; } }
       .shadow { filter: drop-shadow(0 6px 14px rgba(20,30,60,.16)); }
@@ -38,13 +38,12 @@
 
   <!-- Legend -->
   <g font-size="18" transform="translate(70,214)">
-    <rect x="0" y="-14" width="30" height="16" rx="4" fill="url(#gSticky)"/><text x="40" y="0" fill="#5b6678">Actor / Platform</text>
-    <rect x="215" y="-14" width="30" height="16" rx="4" fill="#d6f5df" stroke="#3fb765"/><text x="255" y="0" fill="#5b6678">Service / Compute</text>
-    <rect x="470" y="-14" width="30" height="16" rx="4" fill="#eef3fb" stroke="#c3d0e6"/><text x="510" y="0" fill="#5b6678">Store / Sink</text>
-    <line x1="700" y1="-6" x2="740" y2="-6" stroke="#0f9d6a" stroke-width="4" stroke-dasharray="10 8"/><text x="750" y="0" fill="#5b6678">Telemetry ingest</text>
-    <line x1="960" y1="-6" x2="1000" y2="-6" stroke="#0f9d6a" stroke-width="4" stroke-dasharray="10 8"/><text x="1010" y="0" fill="#5b6678">Real-time / streaming</text>
-    <line x1="1235" y1="-6" x2="1275" y2="-6" stroke="#b45309" stroke-width="4" stroke-dasharray="10 8"/><text x="1285" y="0" fill="#5b6678">Planned: Batch (S3 → Spark)</text>
-    <line x1="1640" y1="-6" x2="1680" y2="-6" stroke="#6d28d9" stroke-width="4" stroke-dasharray="10 8"/><text x="1690" y="0" fill="#5b6678">Query experience layer</text>
+    <rect x="0" y="-14" width="30" height="16" rx="4" fill="#d6f5df" stroke="#3fb765"/><text x="40" y="0" fill="#5b6678">Service / Compute</text>
+    <rect x="255" y="-14" width="30" height="16" rx="4" fill="#eef3fb" stroke="#c3d0e6"/><text x="295" y="0" fill="#5b6678">Store / Sink</text>
+    <line x1="485" y1="-6" x2="525" y2="-6" stroke="#0f9d6a" stroke-width="4" stroke-dasharray="10 8"/><text x="535" y="0" fill="#5b6678">Telemetry ingest</text>
+    <line x1="745" y1="-6" x2="785" y2="-6" stroke="#0891b2" stroke-width="4" stroke-dasharray="10 8"/><text x="795" y="0" fill="#5b6678">Real-time / streaming</text>
+    <line x1="1020" y1="-6" x2="1060" y2="-6" stroke="#b45309" stroke-width="4" stroke-dasharray="10 8"/><text x="1070" y="0" fill="#5b6678">Planned: Batch (S3 → Spark)</text>
+    <line x1="1425" y1="-6" x2="1465" y2="-6" stroke="#6d28d9" stroke-width="4" stroke-dasharray="10 8"/><text x="1475" y="0" fill="#5b6678">Query experience layer</text>
   </g>
 
   <!-- ============ DIAGRAM ============ -->
@@ -78,26 +77,7 @@
     <rect x="70" y="560" width="232" height="272" rx="12" fill="rgba(15,157,106,.06)" stroke="#3f7a56" stroke-width="1.4" stroke-dasharray="6 6"/>
     <text class="b-label" x="186" y="592" text-anchor="middle" fill="#0f9d6a" font-size="15">Near Core Services</text>
 
-    <!-- Sticky notes -->
-    <g class="shadow">
-      <rect x="86" y="28" width="200" height="66" rx="6" fill="url(#gSticky)"/>
-      <text x="186" y="56" text-anchor="middle" class="b-label" font-size="14">Instrumentation</text>
-      <text x="186" y="76" text-anchor="middle" font-size="12" fill="#5a4800">(Event Monitoring)</text>
-    </g>
-    <g class="shadow">
-      <rect x="474" y="28" width="200" height="66" rx="6" fill="url(#gSticky)"/>
-      <text x="574" y="56" text-anchor="middle" class="b-label" font-size="14">Ingestion Platform</text>
-      <text x="574" y="76" text-anchor="middle" font-size="12" fill="#5a4800">(Platform)</text>
-    </g>
-    <g class="shadow">
-      <rect x="1108" y="28" width="184" height="66" rx="6" fill="url(#gSticky)"/>
-      <text x="1200" y="67" text-anchor="middle" class="b-label" font-size="15">Data Cloud</text>
-    </g>
-
-    <!-- feed arrows -->
-    <path class="edge feed" d="M186,94 L186,318" marker-end="url(#arrowFeed)"/>
-    <path class="edge feed" d="M574,94 L574,258" marker-end="url(#arrowFeed)"/>
-    <path class="edge feed" d="M1200,94 L1200,258" marker-end="url(#arrowFeed)"/>
+    <!-- (sticky-note actors and their feed arrows removed) -->
 
     <!-- Core -->
     <g class="shadow">
@@ -143,8 +123,8 @@
 
     <!-- Ajna -> Beacon -->
     <path class="edge flow stream" d="M724,440 L800,440 L800,414 L884,414" marker-end="url(#arrowCyan)"/>
-    <text class="flow-label" x="742" y="392" fill="#0f9d6a" font-size="12">Metrics · Traces</text>
-    <text class="flow-label" x="742" y="408" fill="#0f9d6a" font-size="12">Error Logs</text>
+    <text class="flow-label" x="742" y="392" fill="#0e7490" font-size="12">Metrics · Traces</text>
+    <text class="flow-label" x="742" y="408" fill="#0e7490" font-size="12">Error Logs</text>
 
     <!-- Ajna -> S3 -->
     <path class="edge flow batch" d="M664,514 L664,600" marker-end="url(#arrowAmber)"/>
@@ -185,7 +165,7 @@
       <text x="1117" y="456" text-anchor="middle" font-size="11">connector</text>
     </g>
     <path class="edge flow stream" d="M1192,424 L1320,424" marker-end="url(#arrowCyan)"/>
-    <text class="flow-label" x="1210" y="412" fill="#0f9d6a" font-size="11.5">Fanout Data Writes</text>
+    <text class="flow-label" x="1210" y="412" fill="#0e7490" font-size="11.5">Fanout Data Writes</text>
 
     <!-- Spark job -->
     <g class="shadow">
@@ -203,14 +183,14 @@
     <g class="shadow">
       <path d="M1348,388 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"/>
       <ellipse cx="1418" cy="388" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"/>
-      <text x="1418" y="416" text-anchor="middle" font-size="12" font-weight="700">Data Cloud T1</text>
+      <text x="1418" y="416" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tenant1</text>
       <path d="M1348,470 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"/>
       <ellipse cx="1418" cy="470" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"/>
-      <text x="1418" y="498" text-anchor="middle" font-size="12" font-weight="700">Data Cloud T2</text>
+      <text x="1418" y="498" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tenant2</text>
       <text x="1418" y="566" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="2">· · · · ·</text>
       <path d="M1348,614 h140 v40 a70,10 0 0 1 -140,0 Z" fill="url(#gLake)" stroke="#476089"/>
       <ellipse cx="1418" cy="614" rx="70" ry="10" fill="#e6f0ff" stroke="#476089"/>
-      <text x="1418" y="642" text-anchor="middle" font-size="12" font-weight="700">Data Cloud Tn</text>
+      <text x="1418" y="642" text-anchor="middle" font-size="12" font-weight="700">Data Cloud TenantN</text>
     </g>
 
     <!-- Lakehouse <-> Consumption -->
