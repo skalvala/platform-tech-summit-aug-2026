@@ -51,14 +51,23 @@
   <g transform="translate(100,250)" fill="#10203a">
 
     <!-- Boundaries -->
-    <rect x="372" y="250" width="404" height="628" rx="14" fill="rgba(8,145,178,.05)" stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"/>
-    <text class="b-label" x="574" y="286" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
+    <!-- Falcon Instance 1 (outer): Core FD + Near Core Services -->
+    <rect x="48" y="150" width="286" height="712" rx="18" fill="rgba(109,40,217,.045)" stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"/>
+    <text class="b-label" x="191" y="182" text-anchor="middle" fill="#6d28d9" font-size="20" font-weight="800">Falcon Instance 1</text>
 
-    <rect x="812" y="196" width="948" height="700" rx="16" fill="rgba(109,40,217,.045)" stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"/>
-    <text class="b-label" x="1740" y="232" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
+    <!-- Falcon Instance 2 (outer): CDP FD + Consumption -->
+    <rect x="356" y="150" width="1414" height="712" rx="18" fill="rgba(109,40,217,.045)" stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"/>
+    <text class="b-label" x="1750" y="184" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
 
-    <rect x="836" y="268" width="720" height="600" rx="14" fill="rgba(8,145,178,.04)" stroke="#4a7f97" stroke-width="1.5" stroke-dasharray="6 6"/>
-    <text class="b-label" x="1196" y="302" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud</text>
+    <!-- CDP FD (groups Ingestion Platform + Data Cloud) -->
+    <rect x="364" y="212" width="1202" height="626" rx="16" fill="rgba(51,78,104,.055)" stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"/>
+    <text class="b-label" x="965" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+
+    <rect x="372" y="258" width="404" height="562" rx="14" fill="rgba(8,145,178,.05)" stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"/>
+    <text class="b-label" x="574" y="292" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
+
+    <rect x="836" y="258" width="720" height="562" rx="14" fill="rgba(8,145,178,.04)" stroke="#4a7f97" stroke-width="1.5" stroke-dasharray="6 6"/>
+    <text class="b-label" x="1196" y="292" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud</text>
 
     <rect x="1320" y="330" width="196" height="470" rx="12" fill="rgba(71,96,137,.07)" stroke="#476089" stroke-width="1.4" stroke-dasharray="6 6"/>
     <text class="b-label" x="1418" y="362" text-anchor="middle" fill="#3a5878" font-size="18">Lakehouse</text>
@@ -87,13 +96,13 @@
 
     <!-- feed arrows -->
     <path class="edge feed" d="M186,94 L186,318" marker-end="url(#arrowFeed)"/>
-    <path class="edge feed" d="M574,94 L574,250" marker-end="url(#arrowFeed)"/>
-    <path class="edge feed" d="M1200,94 L1200,268" marker-end="url(#arrowFeed)"/>
+    <path class="edge feed" d="M574,94 L574,258" marker-end="url(#arrowFeed)"/>
+    <path class="edge feed" d="M1200,94 L1200,258" marker-end="url(#arrowFeed)"/>
 
     <!-- Core -->
     <g class="shadow">
       <rect x="70" y="318" width="232" height="212" rx="10" fill="#ffffff" stroke="#c3d0e6" stroke-width="1.5"/>
-      <text x="186" y="346" text-anchor="middle" class="b-label" font-size="16">Core</text>
+      <text x="186" y="346" text-anchor="middle" class="b-label" font-size="16">Core FD</text>
       <g font-size="13" text-anchor="middle">
         <rect x="96" y="360" width="180" height="30" rx="7" fill="#f4f7fc" stroke="#c9d5ea"/><text x="186" y="380">Flow</text>
         <rect x="96" y="398" width="180" height="30" rx="7" fill="#f4f7fc" stroke="#c9d5ea"/><text x="186" y="418">APEX</text>
@@ -210,8 +219,8 @@
     <!-- Consumption -->
     <g class="shadow">
       <polygon points="1600,410 1730,410 1712,478 1582,478" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"/>
-      <text x="1656" y="440" text-anchor="middle" font-size="12" font-weight="700">Data Cloud</text>
-      <text x="1656" y="458" text-anchor="middle" font-size="12" font-weight="700">Reports</text>
+      <text x="1656" y="440" text-anchor="middle" font-size="12" font-weight="700">Unified</text>
+      <text x="1656" y="458" text-anchor="middle" font-size="12" font-weight="700">Observability</text>
       <polygon points="1600,600 1730,600 1712,668 1582,668" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"/>
       <text x="1656" y="630" text-anchor="middle" font-size="12" font-weight="700">headless</text>
     </g>

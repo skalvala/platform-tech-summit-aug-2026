@@ -214,9 +214,9 @@
       <h1 class="title">Unified Observability for Traces<br /><span class="with-batch">High-Level Architecture · with Batch</span></h1>
       <p class="subtitle">
         End-to-end telemetry pipeline that carries customer-facing traces, metrics, and logs
-        from Core &amp; Near-Core services through the CDP Ingestion Fabric into a multi-tenant
-        Data Cloud Lakehouse — combining a <b style="color:var(--cyan)">real-time streaming path</b>
-        and an <b style="color:var(--amber)">S3-backed batch path</b> for consumption by reports and agents.
+        from Core FD &amp; Near-Core services through the CDP FD Ingestion Platform into a multi-tenant
+        Data Cloud Lakehouse — combining a <b style="color:var(--green)">real-time streaming path</b>
+        and an <b style="color:var(--amber)">S3-backed batch path</b> for consumption by Unified Observability and headless.
       </p>
     </div>
     <div class="meta-card">
@@ -284,20 +284,30 @@
           </defs>
 
           <!-- ===== Boundary containers ===== -->
-          <!-- CDP FD -->
-          <rect x="372" y="250" width="404" height="628" rx="14" fill="rgba(8,145,178,.05)"
-                stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"></rect>
-          <text class="boundary-label" x="574" y="286" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
-
-          <!-- Falcon Instance -->
-          <rect x="812" y="196" width="948" height="700" rx="16" fill="rgba(109,40,217,.045)"
+          <!-- Falcon Instance 1 (outer): Core FD + Near Core Services -->
+          <rect x="48" y="150" width="286" height="712" rx="18" fill="rgba(109,40,217,.045)"
                 stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
-          <text class="boundary-label" x="1740" y="232" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
+          <text class="boundary-label" x="191" y="182" text-anchor="middle" fill="#6d28d9" font-size="20" font-weight="800">Falcon Instance 1</text>
 
-          <!-- Data Cloud (CDP FD) inner -->
-          <rect x="836" y="268" width="720" height="600" rx="14" fill="rgba(8,145,178,.04)"
+          <!-- Falcon Instance 2 (outer): CDP FD + Consumption -->
+          <rect x="356" y="150" width="1414" height="712" rx="18" fill="rgba(109,40,217,.045)"
+                stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="1750" y="184" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
+
+          <!-- CDP FD (groups Ingestion Platform + Data Cloud) -->
+          <rect x="364" y="212" width="1202" height="626" rx="16" fill="rgba(51,78,104,.055)"
+                stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="965" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+
+          <!-- Ingestion Platform inner -->
+          <rect x="372" y="258" width="404" height="562" rx="14" fill="rgba(8,145,178,.05)"
+                stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="574" y="292" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
+
+          <!-- Data Cloud inner -->
+          <rect x="836" y="258" width="720" height="562" rx="14" fill="rgba(8,145,178,.04)"
                 stroke="#4a7f97" stroke-width="1.5" stroke-dasharray="6 6"></rect>
-          <text class="boundary-label" x="1196" y="302" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud</text>
+          <text class="boundary-label" x="1196" y="292" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud</text>
 
           <!-- Lakehouse inner -->
           <rect x="1320" y="330" width="196" height="470" rx="12" fill="rgba(71,96,137,.07)"
@@ -332,13 +342,13 @@
 
           <!-- sticky feed arrows -->
           <path class="edge feed" d="M186,94 L186,318" marker-end="url(#arrowFeed)"></path>
-          <path class="edge feed" d="M574,94 L574,250" marker-end="url(#arrowFeed)"></path>
-          <path class="edge feed" d="M1200,94 L1200,268" marker-end="url(#arrowFeed)"></path>
+          <path class="edge feed" d="M574,94 L574,258" marker-end="url(#arrowFeed)"></path>
+          <path class="edge feed" d="M1200,94 L1200,258" marker-end="url(#arrowFeed)"></path>
 
           <!-- ===== Core ===== -->
           <g class="node-shadow">
             <rect x="70" y="318" width="232" height="212" rx="10" fill="#f4f7fc" stroke="#c3d0e6" stroke-width="1.5"></rect>
-            <text x="186" y="346" text-anchor="middle" class="n-label" font-size="16">Core</text>
+            <text x="186" y="346" text-anchor="middle" class="n-label" font-size="16">Core FD</text>
             <g font-size="13" text-anchor="middle">
               <rect x="96" y="360" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="380">Flow</text>
               <rect x="96" y="398" width="180" height="30" rx="7" fill="#ffffff" stroke="#c9d5ea"></rect><text x="186" y="418">APEX</text>
@@ -477,8 +487,8 @@
           <!-- ===== Consumption Layer (parallelograms) ===== -->
           <g class="node-shadow">
             <polygon points="1600,410 1730,410 1712,478 1582,478" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"></polygon>
-            <text x="1656" y="440" text-anchor="middle" font-size="12" font-weight="700">Data Cloud</text>
-            <text x="1656" y="458" text-anchor="middle" font-size="12" font-weight="700">Reports</text>
+            <text x="1656" y="440" text-anchor="middle" font-size="12" font-weight="700">Unified</text>
+            <text x="1656" y="458" text-anchor="middle" font-size="12" font-weight="700">Observability</text>
           </g>
           <g class="node-shadow">
             <polygon points="1600,600 1730,600 1712,668 1582,668" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"></polygon>
@@ -492,10 +502,10 @@
     <div class="callout">
       <span class="ic">⚡</span>
       <p><b>Two coordinated paths, one lakehouse.</b> Structured signals — metrics, traces and error logs —
-      travel the <b style="color:var(--cyan)">real-time streaming path</b> (Beacon → tenant-sharded Ajna Topics →
+      travel the <b style="color:var(--green)">real-time streaming path</b> (Beacon → tenant-sharded Ajna Topics →
       Observability Multi-Tenant Streaming connector → fan-out writes). High-volume <b>Info Logs</b> take the
       <b>batch path</b> (Ajna → Amazon S3 → Single-Tenant S3 Spark job → Lakehouse). Both converge on the
-      per-tenant Data Cloud tables that power Reports and the Concierge Agent.</p>
+      per-tenant Data Cloud tables that power <b>Unified Observability</b> and <b>headless</b> access.</p>
     </div>
   </section>
 
@@ -517,13 +527,13 @@
       <div class="step tel">
         <div class="n">STEP 02 · INGEST</div>
         <h3>Ingestion Service → Ajna</h3>
-        <p>Telemetry lands in the <b>Ingestion Service</b> (via the Mulesoft ingestion platform) inside
+        <p>Telemetry lands in the <b>Ingestion Service</b> (part of the <b>Ingestion Platform</b>) inside
         <b>CDP FD</b> and is funneled into <b>Ajna</b>, the ingestion backbone.</p>
       </div>
       <div class="step">
         <div class="n">STEP 03 · SPLIT (STREAMING)</div>
         <h3>Metrics, Traces &amp; Error Logs → Beacon</h3>
-        <p>Ajna routes structured signals to <b>Beacon</b> inside the <b>Falcon Instance</b>, entering the
+        <p>Ajna routes structured signals to <b>Beacon</b> inside <b>Falcon Instance 2</b>, entering the
         real-time path for low-latency processing.</p>
       </div>
       <div class="step batch">
@@ -552,9 +562,9 @@
       </div>
       <div class="step bidi" style="border-left-color:var(--violet)">
         <div class="n" style="color:var(--violet)">STEP 07 · CONSUME</div>
-        <h3>Lakehouse → Reports &amp; Agents</h3>
-        <p>The <b>Consumption Layer</b> queries the Lakehouse: <b>Data Cloud Reports</b> for analytics and the
-        <b>Concierge Agent</b> for conversational, agentic access.</p>
+        <h3>Lakehouse → Unified Observability &amp; headless</h3>
+        <p>The <b>Consumption Layer</b> queries the Lakehouse: <b>Unified Observability</b> for analytics and
+        <b>headless</b> for conversational, agentic access.</p>
       </div>
     </div>
   </section>
@@ -568,15 +578,15 @@
     </div>
     <div class="zones">
       <div class="zone">
-        <div class="zh"><span class="dot" style="background:var(--green)"></span> Source · Core &amp; Near-Core <span class="tag">SALESFORCE CORE</span></div>
+        <div class="zh"><span class="dot" style="background:var(--green)"></span> Falcon Instance 1 · Core FD &amp; Near-Core <span class="tag">SALESFORCE CORE</span></div>
         <ul>
           <li><b>Instrumentation (Event Monitoring)</b><span>Emits customer-facing telemetry from platform runtime.</span></li>
-          <li><b>Core</b><span>Flow, APEX, Prompt Builder and other first-class runtimes.</span></li>
+          <li><b>Core FD</b><span>Flow, APEX, Prompt Builder and other first-class runtimes.</span></li>
           <li><b>Near Core Services</b><span>DC Services, Planner Service, LLMG Service, MCP.</span></li>
         </ul>
       </div>
       <div class="zone">
-        <div class="zh"><span class="dot" style="background:var(--cyan)"></span> CDP FD · Ingestion Fabric <span class="tag">MULESOFT</span></div>
+        <div class="zh"><span class="dot" style="background:var(--cyan)"></span> CDP FD · Ingestion Platform <span class="tag">PLATFORM</span></div>
         <ul>
           <li><b>Ingestion Service</b><span>Entry funnel for customer-facing telemetry data.</span></li>
           <li><b>Ajna</b><span>Ingestion backbone; splits structured signals vs. info logs.</span></li>
@@ -584,7 +594,7 @@
         </ul>
       </div>
       <div class="zone">
-        <div class="zh"><span class="dot" style="background:var(--violet)"></span> Falcon · Data Cloud (CDP FD) <span class="tag">MULTI-TENANT</span></div>
+        <div class="zh"><span class="dot" style="background:var(--violet)"></span> Falcon Instance 2 · Data Cloud <span class="tag">MULTI-TENANT</span></div>
         <ul>
           <li><b>Beacon</b><span>Real-time entry point for metrics, traces &amp; error logs.</span></li>
           <li><b>Ajna Topics</b><span>Streams sharded by CDP tenant for isolation.</span></li>
@@ -596,8 +606,8 @@
         <div class="zh"><span class="dot" style="background:#6f9bff"></span> Lakehouse &amp; Consumption <span class="tag">DATA CLOUD</span></div>
         <ul>
           <li><b>Lakehouse (Data Cloud T1…Tn)</b><span>Per-tenant tables — the unified observability store.</span></li>
-          <li><b>Data Cloud Reports</b><span>Analytics &amp; reporting surface over the lakehouse.</span></li>
-          <li><b>Concierge Agent</b><span>Agentic, conversational access to observability data.</span></li>
+          <li><b>Unified Observability</b><span>Analytics &amp; reporting surface over the lakehouse.</span></li>
+          <li><b>headless</b><span>Agentic, conversational access to observability data.</span></li>
         </ul>
       </div>
     </div>
