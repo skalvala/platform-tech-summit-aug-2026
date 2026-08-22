@@ -218,6 +218,10 @@
         Data Cloud Lakehouse — combining a <b style="color:var(--green)">real-time streaming path</b>
         and an <b style="color:var(--amber)">S3-backed batch path</b> for consumption by Unified Observability and headless.
       </p>
+      <p class="subtitle" style="margin-top:8px">
+        <b style="color:var(--cyan)">Supported today:</b> Traces &amp; Error Logs.
+        <b style="color:var(--amber)">Metrics</b> is planned future work.
+      </p>
     </div>
     <div class="meta-card">
       <div class="meta-row"><span class="k">DOCUMENT</span><span class="v">HLD — Traces (Batch)</span></div>
@@ -288,6 +292,12 @@
                 stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
           <text class="boundary-label" x="191" y="182" text-anchor="middle" fill="#6d28d9" font-size="20" font-weight="800">Falcon Instance 1</text>
 
+          <!-- Instrumentation (wraps Core FD + Near Core Services) -->
+          <rect x="60" y="214" width="264" height="632" rx="14" fill="rgba(51,78,104,.05)"
+                stroke="#5b7089" stroke-width="1.5" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="191" y="240" text-anchor="middle" fill="#334e68" font-size="18" font-weight="800">Instrumentation</text>
+          <text x="191" y="260" text-anchor="middle" fill="#8a94a6" font-size="12" font-style="italic">(VERTICAL #1)</text>
+
           <!-- Falcon Instance 2 (outer): CDP FD + Consumption -->
           <rect x="356" y="150" width="1414" height="712" rx="18" fill="rgba(109,40,217,.045)"
                 stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
@@ -302,11 +312,13 @@
           <rect x="372" y="258" width="404" height="562" rx="14" fill="rgba(8,145,178,.05)"
                 stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"></rect>
           <text class="boundary-label" x="574" y="292" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
+          <text x="574" y="312" text-anchor="middle" fill="#6a7893" font-size="12" font-style="italic">(VERTICAL #2)</text>
 
           <!-- Data Cloud inner -->
           <rect x="836" y="258" width="720" height="562" rx="14" fill="rgba(8,145,178,.04)"
                 stroke="#4a7f97" stroke-width="1.5" stroke-dasharray="6 6"></rect>
           <text class="boundary-label" x="1196" y="292" text-anchor="middle" fill="#0e7490" font-size="19">Data Cloud</text>
+          <text x="1196" y="312" text-anchor="middle" fill="#6a7893" font-size="12" font-style="italic">(VERTICAL #3)</text>
 
           <!-- Lakehouse inner -->
           <rect x="1320" y="330" width="196" height="470" rx="12" fill="rgba(71,96,137,.07)"
@@ -317,6 +329,7 @@
           <rect x="1572" y="330" width="176" height="470" rx="12" fill="rgba(109,40,217,.05)"
                 stroke="#8b73c4" stroke-width="1.4" stroke-dasharray="6 6"></rect>
           <text class="boundary-label" x="1660" y="362" text-anchor="middle" fill="#6d28d9" font-size="16">Consumption Layer</text>
+          <text x="1660" y="382" text-anchor="middle" fill="#6a7893" font-size="11" font-style="italic">(VERTICAL #4)</text>
 
           <!-- Near Core Services -->
           <rect x="70" y="560" width="232" height="272" rx="12" fill="rgba(15,157,106,.06)"
@@ -375,8 +388,8 @@
 
           <!-- Ajna -> Beacon (Metrics/Traces/Error Logs), crosses into Falcon -->
           <path class="edge stream dash-anim" d="M724,440 L800,440 L800,414 L884,414" marker-end="url(#arrowCyan)"></path>
-          <text class="flow-label" x="742" y="392" fill="#0e7490" font-size="12">Metrics · Traces</text>
-          <text class="flow-label" x="742" y="408" fill="#0e7490" font-size="12">Error Logs</text>
+          <text class="flow-label" x="742" y="392" fill="#0e7490" font-size="12">Traces · Error Logs</text>
+          <text class="flow-label" x="742" y="408" fill="#b45309" font-size="11.5" font-style="italic">Metrics — planned</text>
 
           <!-- Ajna -> S3 (Info Logs) -->
           <path class="edge batch dash-anim" d="M664,514 L664,600" marker-end="url(#arrowAmber)"></path>
@@ -391,7 +404,7 @@
 
           <!-- ===== Beacon ===== -->
           <g class="node-shadow">
-            <rect x="884" y="382" width="126" height="66" rx="10" fill="url(#gStore)" stroke="#c3d0e6" stroke-width="1.5"></rect>
+            <rect x="884" y="382" width="126" height="66" rx="10" fill="url(#gGreen)" stroke="#3fb765" stroke-width="1.6"></rect>
             <text x="947" y="421" text-anchor="middle" class="n-label" font-size="16">Beacon</text>
           </g>
 
@@ -435,8 +448,8 @@
           </g>
 
           <!-- Spark job reads logs from S3 (long arrow back to S3) -->
-          <path class="edge batch dash-anim" d="M1042,700 L724,700" marker-end="url(#arrowAmber)"></path>
-          <text class="flow-label" x="812" y="690" fill="#b45309" font-size="11.5">Read logs from S3</text>
+          <path class="edge batch dash-anim" d="M709,655 L1042,655" marker-end="url(#arrowAmber)"></path>
+          <text class="flow-label" x="812" y="645" fill="#b45309" font-size="11.5">Read logs from S3</text>
 
           <!-- Spark job -> Lakehouse -->
           <path class="edge batch dash-anim" d="M1192,652 L1260,652 L1260,700 L1320,700" marker-end="url(#arrowAmber)"></path>
@@ -481,7 +494,8 @@
 
     <div class="callout">
       <span class="ic">⚡</span>
-      <p><b>Two coordinated paths, one lakehouse.</b> Structured signals — metrics, traces and error logs —
+      <p><b>Two coordinated paths, one lakehouse.</b> Structured signals — <b>traces and error logs today</b>
+      (<b style="color:var(--amber)">metrics planned</b>) —
       travel the <b style="color:var(--green)">real-time streaming path</b> (Beacon → tenant-sharded Ajna Topics →
       Observability Multi-Tenant Streaming connector → fan-out writes). High-volume <b>Info Logs</b> take the
       <b>batch path</b> (Ajna → Amazon S3 → Single-Tenant S3 Spark job → Lakehouse). Both converge on the
@@ -512,9 +526,10 @@
       </div>
       <div class="step">
         <div class="n">STEP 03 · SPLIT (STREAMING)</div>
-        <h3>Metrics, Traces &amp; Error Logs → Beacon</h3>
+        <h3>Traces &amp; Error Logs → Beacon</h3>
         <p>Ajna routes structured signals to <b>Beacon</b> inside <b>Falcon Instance 2</b>, entering the
-        real-time path for low-latency processing.</p>
+        real-time path for low-latency processing. <b>Traces and Error Logs are supported today</b>;
+        <b style="color:var(--amber)">Metrics is planned future work</b>.</p>
       </div>
       <div class="step batch">
         <div class="n">STEP 03 · SPLIT (BATCH)</div>
