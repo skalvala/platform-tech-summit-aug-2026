@@ -187,7 +187,7 @@
   .arch text { font-family: var(--sans); fill: #10203a; }
   .n-label { font-weight: 700; }
   .boundary-label { font-family: var(--sans); font-weight: 700; }
-  .flow-label { font-family: var(--mono); font-size: 13px; }
+  .flow-label { font-family: var(--mono); font-size: 13px; paint-order: stroke; stroke: #ffffff; stroke-width: 3.4px; stroke-linejoin: round; }
   .edge { fill: none; stroke-width: 2.4; }
   .edge.tel { stroke: var(--green); }
   .edge.stream { stroke: var(--cyan); }
@@ -303,10 +303,14 @@
                 stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"></rect>
           <text class="boundary-label" x="1750" y="184" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
 
-          <!-- CDP FD (groups Ingestion Platform + Data Cloud) -->
-          <rect x="364" y="212" width="1202" height="626" rx="16" fill="rgba(51,78,104,.055)"
+          <!-- CDP FD (Falcon Instance 1 side): wraps Ingestion Platform -->
+          <rect x="360" y="212" width="432" height="626" rx="16" fill="rgba(51,78,104,.055)"
                 stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"></rect>
-          <text class="boundary-label" x="965" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+          <text class="boundary-label" x="576" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+          <!-- CDP FD (Falcon Instance 2 side): wraps Data Cloud -->
+          <rect x="824" y="212" width="744" height="626" rx="16" fill="rgba(51,78,104,.055)"
+                stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"></rect>
+          <text class="boundary-label" x="1196" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
 
           <!-- Ingestion Platform inner -->
           <rect x="372" y="258" width="404" height="562" rx="14" fill="rgba(8,145,178,.05)"

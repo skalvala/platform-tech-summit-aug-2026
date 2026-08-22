@@ -15,7 +15,7 @@
     <radialGradient id="gGlowV" cx="6%" cy="6%" r="45%"><stop offset="0" stop-color="#6d28d9" stop-opacity="0.05"/><stop offset="0.7" stop-color="#6d28d9" stop-opacity="0"/></radialGradient>
     <style>
       .b-label { font-weight:700; }
-      .flow-label { font-family:"Courier New", monospace; }
+      .flow-label { font-family:"Courier New", monospace; paint-order:stroke; stroke:#ffffff; stroke-width:3.4px; stroke-linejoin:round; }
       .edge { fill:none; stroke-width:2.6; }
       .feed { stroke:#64789e; stroke-width:2.4; }
       .tel { stroke:#0f9d6a; } .stream { stroke:#0891b2; } .batch { stroke:#b45309; } .bidi { stroke:#6d28d9; }
@@ -65,9 +65,12 @@
     <rect x="814" y="150" width="956" height="712" rx="18" fill="rgba(109,40,217,.045)" stroke="#8b73c4" stroke-width="1.8" stroke-dasharray="7 6"/>
     <text class="b-label" x="1750" y="184" text-anchor="end" fill="#6d28d9" font-size="24" font-weight="800">Falcon Instance 2</text>
 
-    <!-- CDP FD (groups Ingestion Platform + Data Cloud) -->
-    <rect x="364" y="212" width="1202" height="626" rx="16" fill="rgba(51,78,104,.055)" stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"/>
-    <text class="b-label" x="965" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+    <!-- CDP FD (Falcon Instance 1 side): wraps Ingestion Platform -->
+    <rect x="360" y="212" width="432" height="626" rx="16" fill="rgba(51,78,104,.055)" stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"/>
+    <text class="b-label" x="576" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
+    <!-- CDP FD (Falcon Instance 2 side): wraps Data Cloud -->
+    <rect x="824" y="212" width="744" height="626" rx="16" fill="rgba(51,78,104,.055)" stroke="#5b7089" stroke-width="1.6" stroke-dasharray="7 6"/>
+    <text class="b-label" x="1196" y="242" text-anchor="middle" fill="#334e68" font-size="22" font-weight="800">CDP FD</text>
 
     <rect x="372" y="258" width="404" height="562" rx="14" fill="rgba(8,145,178,.05)" stroke="#4a7f97" stroke-width="1.6" stroke-dasharray="7 6"/>
     <text class="b-label" x="574" y="292" text-anchor="middle" fill="#0e7490" font-size="21">Ingestion Platform</text>
